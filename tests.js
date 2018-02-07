@@ -1,4 +1,9 @@
-const {add, singleCharAdd, twoTermsAdd} = require('./add');
+const {
+  add,
+  singleCharAdd,
+  twoTermsAdd,
+  InvalidStringError
+} = require('./add');
 const assert = require('assert');
 
 function itShoudPerformSingleDigitAddition() {
@@ -39,13 +44,27 @@ function itShouldPerformMultipleTermsAddition() {
     assert.deepStrictEqual(add('00', '9', '2321', '42'), '2372');
   } catch (err) {
     console.log(err);
+    return false;
   }
+  return true;
+}
+
+function itShouldValidateTermStrings() {
+  try {
+    assert.throws(() => add('12', 'b'), InvalidStringError);
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+
+  return true;
 }
 
 const tests = [
   itShoudPerformSingleDigitAddition,
   itShouldPerformTwoTermsAddition,
-  itShouldPerformMultipleTermsAddition
+  itShouldPerformMultipleTermsAddition,
+  itShouldValidateTermStrings
 ]
 
 /**
@@ -57,8 +76,6 @@ function runTests() {
     if (tests[i]() === false) {
       console.log('ERROR');
       break;
-    } else {
-      console.log('ok');
     }
   }
 }

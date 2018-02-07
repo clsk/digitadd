@@ -83,14 +83,20 @@ function twoTermsAdd(a, b) {
   return total.reverse().join('');
 }
 
+
+class InvalidStringError extends Error {}
 /**
  * Adds an arbitrary amount of terms
  * @param {...number} terms 
  * @returns {string}
  */
 function add(terms) {
-  // TODO: validate terms are all digits
   const args = Array.prototype.slice.call(arguments); // convert arguments to real array
+  args.forEach(term => {
+    if (/^\d*$/.test(term) === false) {
+      throw new InvalidStringError('String contains non-digit characters');
+    }
+  });
   if (args.length == 0) {
     return '0';
   } else {
@@ -101,5 +107,6 @@ function add(terms) {
 module.exports = {
   add,
   twoTermsAdd,
-  singleCharAdd
+  singleCharAdd,
+  InvalidStringError
 }
