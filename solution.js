@@ -6,10 +6,10 @@ const CARRY_OVER_DIGIT = '1';
 /** TESTS */
 function itShoudPerformSingleDigitAddition() {
   try {
-    assert.deepStrictEqual({digit: 0, hasCarryOver: false}, singleCharAdd('0', '0'));
-    assert.deepStrictEqual({digit: 4, hasCarryOver: false}, singleCharAdd('1', '3'));
-    assert.deepStrictEqual({digit: 0, hasCarryOver: true}, singleCharAdd('2', '8'));
-    assert.deepStrictEqual({digit: 8, hasCarryOver: true}, singleCharAdd('9', '9'));
+    assert.deepStrictEqual(singleCharAdd('0', '0'), {digit: 0, hasCarryOver: false});
+    assert.deepStrictEqual(singleCharAdd('1', '3'), {digit: 4, hasCarryOver: false});
+    assert.deepStrictEqual(singleCharAdd('2', '8'), {digit: 0, hasCarryOver: true});
+    assert.deepStrictEqual(singleCharAdd('9', '9'), {digit: 8, hasCarryOver: true});
   } catch (err) {
     console.log(err);
     return false;
@@ -20,16 +20,25 @@ function itShoudPerformSingleDigitAddition() {
 
 function itShouldPerformTwoTermsAddition() {
   try {
-    assert.deepStrictEqual('21', twoTermsAdd('12', '9'));
-    assert.deepStrictEqual('20021', twoTermsAdd('19999', '22'));
+    assert.deepStrictEqual(twoTermsAdd('12', '9'), '21');
+    assert.deepStrictEqual(twoTermsAdd('9', '12'), '21');
+    assert.deepStrictEqual(twoTermsAdd('19999', '22'), '20021');
+    assert.deepStrictEqual(twoTermsAdd('22', '19999'), '20021');
+    assert.deepStrictEqual(twoTermsAdd('44', '94'), '138');
   } catch (err) {
     console.log(err);
     return false;
   }
+
   return true;
 }
 /** END OF TESTS */
 
+/**
+ * Adds two single-digit (char) terms
+ * @param {string} a First Term
+ * @param {string} b Second Term
+ */
 function singleCharAdd(a, b) {
   const sum = parseInt(a) + parseInt(b); // this can be optimized using a sum table, or memoizing results
   if (sum > 9) {
@@ -45,22 +54,70 @@ function singleCharAdd(a, b) {
   }
 }
 
+/**
+ * Adds two multiple-digit (string) terms
+ * @param {string} a 
+ * @param {string} b 
+ */
 function twoTermsAdd(a, b) {
+  let total = [];
+  for (
+    let aIndex = a.length-1, bIndex = b.length-1, hasCarryOver = false; 
+    aIndex > -1 || bIndex > -1 || hasCarryOver === true;
+    --aIndex, --bIndex
+  ) {
+    if (aIndex < 0 && bIndex < 0 && hasCarryOver == true) {
+      total.push(CARRY_OVER_DIGIT);
+      hasCarryOver = false;
+    } else if (aIndex < 0) {
+      if (hasCarryOver === true) {
+        const result = singleCharAdd(b[bIndex], CARRY_OVER_DIGIT);
+        total.push(result.digit);
+        hasCarryOver = result.hasCarryOver;
+      } else {
+        total.push(b[bIndex]);
+      }
+    } else if (bIndex < 0)  {
+      if (hasCarryOver === true) {
+        const result = singleCharAdd(a[aIndex], CARRY_OVER_DIGIT);
+        total.push(result.digit);
+        hasCarryOver = result.hasCarryOver;
+      } else {
+        total.push(a[aIndex]);
+      }
+    } else {
+      let result = singleCharAdd(a[aIndex], b[bIndex]);
+      if (hasCarryOver) {
+        result.digit = singleCharAdd(result.digit, CARRY_OVER_DIGIT).digit;
+      }
+      hasCarryOver = result.hasCarryOver;
+      total.push(result.digit);
+    }
+  }
+
+  return total.reverse().join('');
 }
 
-function add() {
-
+/**
+ * 
+ * @param {...number} terms 
+ */
+function add(terms) {
 }
 
 const tests = [
-  itShoudPerformSingleDigitAddition
+  itShoudPerformSingleDigitAddition,
+  itShouldPerformTwoTermsAddition
 ]
 
 function runTests() {
   for (let i = 0; i < tests.length; ++i) {
-    console.log('Running test: ', tests[i]);
+    console.log('Running test: ', tests[i].name);
     if (tests[i]() === false) {
+      console.log('ERROR');
       break;
+    } else {
+      console.log('ok');
     }
   }
 }
