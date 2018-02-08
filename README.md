@@ -32,8 +32,13 @@ There are two ways to approach this.
 -----       --------              R|E|S|U|L|T|
                                     +  |4|3|7|
                                       --------
+```
 
 Approaching the problem using the sum by row, then column appears easier from an algorithmic perspective.
 The reason being that, in that case carry-over, will every only be 1. Since the largest numbers (9+9) = 18. Store digit = 8, carry-over digit = 1.
 So, going to approach it that way to begin with.
-```
+
+## Runing
+
+The solution is written in JavaScript and should be running using NodeJS.
+To run all tests, install NodeJS in your OS of choice. Then, simply run using: `node solution.js`

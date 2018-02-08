@@ -51,7 +51,7 @@ function twoTermsAdd(a, b) {
     aIndex > -1 || bIndex > -1 || hasCarryOver === true;
     --aIndex, --bIndex
   ) {
-    if (aIndex < 0 && bIndex < 0 && hasCarryOver == true) {
+    if (aIndex < 0 && bIndex < 0 && hasCarryOver === true) {
       total.push(CARRY_OVER_DIGIT);
       hasCarryOver = false;
     } else if (aIndex < 0) {
